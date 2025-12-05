@@ -1,5 +1,8 @@
 using API.Business;
-using Data.DTO.API;
+using Data.Models;
+using DTO.API;
+using Microsoft.EntityFrameworkCore;
+using System;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +11,9 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
+builder.Services.AddDbContext<AdoptContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
+);
 builder.Services.AddHttpClient(); // Registers IHttpClientFactory
 
 builder.Services.AddSwaggerGen();
@@ -15,6 +21,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.Configure<ApiSettings>(builder.Configuration.GetSection("ApiSettings"));
 builder.Services.AddScoped<ApiSettings>();
 builder.Services.AddScoped<IAdoptBusiness, AdoptBusiness>();
+builder.Services.AddScoped<IUserBusiness, UserBusiness>();
 
 builder.Services.AddMemoryCache();
 
@@ -32,7 +39,7 @@ builder.Services.AddCors(options =>
 WebApplication app = builder.Build();
 
 
-if (app.Environment.IsDevelopment())
+//if (app.Environment.IsDevelopment())
 {
     _ = app.UseSwagger();
     _ = app.UseSwaggerUI();

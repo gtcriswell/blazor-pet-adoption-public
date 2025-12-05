@@ -1,5 +1,6 @@
-﻿using Data.DTO.API;
-using Data.DTO.API.Animals;
+﻿using DTO.API;
+using DTO.API.Animals;
+using DTO.API.Orgs;
 using Shared;
 using System.Net.Http.Json;
 
@@ -10,7 +11,7 @@ namespace Client.Services
     public interface IAdoptService
     {
         Task<List<AnimalsStandard>> GetAnimals(SearchParams animalSearchDto, CancellationToken cancellationToken = default);
-        Task<List<Data.DTO.API.Orgs.OrgStandard>> GetOrgs(SearchParams animalSearchDto, CancellationToken cancellationToken = default);
+        Task<List<OrgStandard>> GetOrgs(SearchParams animalSearchDto, CancellationToken cancellationToken = default);
 
     }
 
@@ -64,7 +65,7 @@ namespace Client.Services
             }
         }
 
-        public async Task<List<Data.DTO.API.Orgs.OrgStandard>> GetOrgs(SearchParams animalSearchDto, CancellationToken cancellationToken = default)
+        public async Task<List<OrgStandard>> GetOrgs(SearchParams animalSearchDto, CancellationToken cancellationToken = default)
         {
             HttpClient client = _httpClientFactory.CreateClient("API");
 
@@ -79,7 +80,7 @@ namespace Client.Services
 
                 if (response.IsSuccessStatusCode)
                 {
-                    List<Data.DTO.API.Orgs.OrgStandard>? orgSearch = await response.Content.ReadFromJsonAsync<List<Data.DTO.API.Orgs.OrgStandard>>(_jsonOptions, cancellationToken).ConfigureAwait(false);
+                    List<OrgStandard>? orgSearch = await response.Content.ReadFromJsonAsync<List<OrgStandard>>(_jsonOptions, cancellationToken).ConfigureAwait(false);
                     return orgSearch ?? [];
                 }
 

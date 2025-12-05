@@ -27,7 +27,7 @@
 {
     <div class="row">
         <div class="col-md-6 col-sm-12">
-            <Client.Pages.Components.Pager Items="allAnimals" PageSize="15" TItem="Data.DTO.API.Animals.AnimalsStandard" PageChanged="OnPageChanged" />
+            <Client.Pages.Components.Pager Items="allAnimals" PageSize="15" TItem="DTO.API.Animals.AnimalsStandard" PageChanged="OnPageChanged" />
 
             @if (speciesOptions != null && speciesOptions.Any())
             {
@@ -73,21 +73,35 @@
             </div>
 
             <!-- The Modal -->
-            <div class="modal modal-lg fade" id="modal_@data.Id" tabindex="-1" aria-labelledby="modalLabel_@data.Id" aria-hidden="true">
-                <div class="modal-dialog">
+            <div class="modal fade" id="modal_@data.Id" tabindex="-1"
+                 aria-labelledby="modalLabel_@data.Id" aria-hidden="true">
+
+                <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
                     <div class="modal-content">
+
+                        <!-- Header -->
                         <div class="modal-header">
                             <h5 class="modal-title" id="modalLabel_@data.Id">@data.Breed</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
+
+                        <!-- Body -->
                         <div class="modal-body text-center">
-                            <img src="@data.PhotoUrlLarge" alt="" />
-                            <br />
+
+                            <img src="@data.PhotoUrlLarge"
+                                 alt="@data.Breed"
+                                 class="img-fluid rounded mb-3" />
+
                             @if (!string.IsNullOrEmpty(data.WebsiteUrlString))
                             {
-                                <a href="@data.WebsiteUrl" target="_blank" class="link-body-emphasis text-decoration-none">Visit Website</a>
+                                <a href="@data.WebsiteUrl"
+                                   target="_blank"
+                                   class="btn btn-primary w-100">
+                                    Visit Website
+                                </a>
                             }
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -112,14 +126,14 @@
     public NavigationManager? Nav { get; set; }
 
     [Inject]
-    private Client.Services.IAdoptService adoptService { get; set; }
+    private Client.Services.IAdoptService adoptService { get; set; } = default!;
 
     private List<AnimalsStandard> allAnimals = new();
     private List<AnimalsStandard> pagedAnimals = new();
 
     private List<string> speciesOptions { get; set; } = new();
 
-    private Data.DTO.API.SearchParams searchDto = new();
+    private DTO.API.SearchParams searchDto = new();
 
     bool IsLoading { get; set; } = false;
 
@@ -160,7 +174,7 @@
 
     }
 
-    private async Task OnSearch(Data.DTO.API.SearchParams searchDto)
+    private async Task OnSearch(DTO.API.SearchParams searchDto)
     {
         IsLoading = true;
         StateHasChanged();

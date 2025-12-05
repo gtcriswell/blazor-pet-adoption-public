@@ -112,13 +112,13 @@
     [Inject]
     private Client.Services.IAdoptService adoptService { get; set; }
 
-    private List<Data.DTO.API.Orgs.OrgStandard> orgs { get; set; } = new();
+    private List<OrgStandard> orgs { get; set; } = new();
 
-    private Data.DTO.API.SearchParams searchDto = new();
+    private SearchParams searchDto = new();
 
     bool IsLoading { get; set; } = false;
 
-    private async Task OnSearch(Data.DTO.API.SearchParams searchDto)
+    private async Task OnSearch(SearchParams searchDto)
     {
         IsLoading = true;
         StateHasChanged();

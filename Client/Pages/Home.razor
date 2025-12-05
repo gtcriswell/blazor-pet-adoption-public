@@ -141,7 +141,7 @@
     public NavigationManager? Nav { get; set; }
 
 
-    void OnSearch(Data.DTO.API.SearchParams animalSearchDto)
+    void OnSearch(DTO.API.SearchParams animalSearchDto)
     {
         Nav.NavigateTo($"search?zipCode={animalSearchDto.data.filterRadius.postalcode}&radius={animalSearchDto.data.filterRadius.miles}&species={animalSearchDto.data.filterRadius.species}");
     }

@@ -21,6 +21,7 @@ builder.Services.AddHttpClient("API", client =>
 
 // Typed HttpClient
 builder.Services.AddScoped<IAdoptService, AdoptService>();
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ZipService>();
 
 await builder.Build().RunAsync();

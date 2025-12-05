@@ -1,6 +1,6 @@
-﻿using Data.DTO.API;
-using Data.DTO.API.Animals;
-using Data.DTO.API.Orgs;
+﻿using DTO.API;
+using DTO.API.Animals;
+using DTO.API.Orgs;
 using Mapster;
 using Microsoft.Extensions.Options;
 using System.Text;
@@ -78,11 +78,11 @@ namespace API.Business
                 }
 
                 await using Stream stream = await response.Content.ReadAsStreamAsync(cancellationToken);
-                Data.DTO.API.Animals.Root? animals = await JsonSerializer.DeserializeAsync<Data.DTO.API.Animals.Root?>(stream, _jsonOptions, cancellationToken);
+                DTO.API.Animals.Root? animals = await JsonSerializer.DeserializeAsync<DTO.API.Animals.Root?>(stream, _jsonOptions, cancellationToken);
 
                 if (animals != null && animals.data != null && animals.data.Any())
                 {
-                    foreach (Data.DTO.API.Animals.Datum animal in animals.data)
+                    foreach (DTO.API.Animals.Datum animal in animals.data)
                     {
                         string? locationId = animal.relationships.orgs.data.FirstOrDefault()?.id;
                         string? breedId = animal.relationships.breeds.data.FirstOrDefault()?.id;
@@ -179,10 +179,10 @@ namespace API.Business
                 }
 
                 await using Stream stream = await response.Content.ReadAsStreamAsync(cancellationToken);
-                Data.DTO.API.Orgs.Root? orgSearchResult = await JsonSerializer.DeserializeAsync<Data.DTO.API.Orgs.Root?>(stream, _jsonOptions, cancellationToken);
+                DTO.API.Orgs.Root? orgSearchResult = await JsonSerializer.DeserializeAsync<DTO.API.Orgs.Root?>(stream, _jsonOptions, cancellationToken);
                 if (orgSearchResult != null && orgSearchResult.data.Any())
                 {
-                    foreach (Data.DTO.API.Orgs.Datum data in orgSearchResult.data)
+                    foreach (DTO.API.Orgs.Datum data in orgSearchResult.data)
                     {
                         orgSearches.Add(data.attributes.Adapt<OrgStandard>());
 

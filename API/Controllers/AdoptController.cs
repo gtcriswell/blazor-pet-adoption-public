@@ -1,6 +1,6 @@
 ﻿using API.Business;
-using Data.DTO.API.Animals;
-using Data.DTO.API.Orgs;
+using DTO.API.Animals;
+using DTO.API.Orgs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Shared;
@@ -100,7 +100,7 @@ namespace API.Controllers
                 _ = _cache.Set<List<OrgStandard>>(key, orderedResults, TimeSpan.FromMinutes(30));
 
                 // Fix for IDE0305: Use collection initializer for empty list
-                return results == null || !results.Any() ? Ok(new List<Data.DTO.API.Orgs.Attributes>()) : Ok(results);
+                return results == null || !results.Any() ? Ok(new List<DTO.API.Orgs.Attributes>()) : Ok(results);
             }
             catch (OperationCanceledException)
             {

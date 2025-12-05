@@ -46,10 +46,10 @@
 
 @code {
     [Parameter]
-    public EventCallback<Data.DTO.API.SearchParams> OnSearch { get; set; }
+    public EventCallback<DTO.API.SearchParams> OnSearch { get; set; }
 
     [Parameter]
-    public Data.DTO.API.SearchParams AnimalSearchDto { get; set; } = new();
+    public DTO.API.SearchParams AnimalSearchDto { get; set; } = new();
 
     [Parameter]
     public bool ShowBreeds { get; set; } = true;
