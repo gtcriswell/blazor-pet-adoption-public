@@ -121,3 +121,54 @@ code {
     background-color: rgba(255, 255, 255, 0.7); /* optional fade */
     z-index: 9999; /* above everything */
 }
+
+/* Fancy gradient top bar */
+.fancy-nav {
+    background: linear-gradient(90deg, #ff8c42, #ffb26b);
+    color: white;
+}
+
+.paw-icon {
+    font-size: 1.5rem;
+}
+
+/* Menu background */
+.fancy-menu {
+    background: #fff;
+    border-top: 4px solid #ff8c42;
+    animation: fadeSlideDown .3s ease-out;
+}
+
+/* Menu links */
+.nav-link {
+    font-size: 1.1rem;
+    color: #444 !important;
+    font-weight: 500;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    transition: all .2s ease;
+}
+
+/* Hover effect */
+.hover-item:hover .nav-link {
+    background: #ffe9d6;
+    color: #d45a00 !important;
+    transform: translateX(5px);
+}
+
+.menu-icon {
+    font-size: 1.4rem;
+}
+
+/* Animation */
+@keyframes fadeSlideDown {
+    0% {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

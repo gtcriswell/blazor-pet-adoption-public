@@ -11,7 +11,7 @@
 
                 try {
                     // Free API, no key needed
-                    const url = `https://geocode.maps.co/reverse?lat=${latitude}&lon=${longitude}&api_key=692e3a10bc9b8659856895pgqac8708`;
+                    const url = `https://geocode.maps.co/reverse?lat=${latitude}&lon=${longitude}&api_key=xxxx`;
                     const response = await fetch(url);
                     const data = await response.json();
 
