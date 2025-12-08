@@ -1,0 +1,149 @@
+﻿@page "/"
+
+<PageTitle>Find a Rescue</PageTitle>
+
+<!-- HERO SECTION -->
+<div class="container-fluid bg-light py-5">
+    <div class="container py-5">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold">Find animals in need of rescue near you.</h1>
+                <p class="lead mt-3">
+                    Search thousands of rescue organizations, shelters,
+                    and foster groups across the country—all in one easy place.
+                </p>
+
+                <!-- SEARCH BAR -->
+                <Client.Pages.Components.SearchBox OnSearch="OnSearch"></Client.Pages.Components.SearchBox>
+
+            </div>
+
+            <!-- OPTIONAL HERO IMAGE -->
+            <div class="col-lg-6 text-center mt-4 mt-lg-0">
+                <img src="images/hero-animals.png"
+                     class="img-fluid rounded shadow-sm"
+                     alt="Animals" />
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- HOW IT WORKS -->
+<div class="container py-5">
+    <h2 class="text-center mb-4 fw-bold">How It Works</h2>
+    <div class="row text-center">
+        <div class="col-md-4 mb-4">
+            <div class="p-4 border rounded shadow-sm h-100">
+                <h4>1. Search</h4>
+                <p>Enter your ZIP code to find rescues near you.</p>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="p-4 border rounded shadow-sm h-100">
+                <h4>2. Explore Rescues</h4>
+                <p>View details, contact info, websites, and available pets.</p>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="p-4 border rounded shadow-sm h-100">
+                <h4>3. Connect & Adopt</h4>
+                <p>Start the journey toward adoption or fostering.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- FEATURED CATEGORIES -->
+<div class="container py-5">
+    <h2 class="text-center fw-bold mb-4">Browse by Category</h2>
+    <div class="row g-4">
+        @foreach (var cat in new[] { "Dog Rescues", "Cat Rescues", "Large Animal  Rescues", "Small Animal Rescues" })
+        {
+            <div class="col-md-4 col-lg-3 d-grid">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-body text-center">
+                        <h5 class="fw-bold">@cat</h5>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+
+<!-- WHY CHOOSE US -->
+<div class="container py-5 bg-light rounded">
+    <h2 class="text-center fw-bold mb-4">Why Choose Us?</h2>
+
+    <div class="row g-4">
+        @foreach (var item in new[]
+  {
+            "100% Free Resource – No fees or sign-ups.",
+            "Nationwide Rescue Database.",
+            "Updated Listings from reliable sources.",
+            "Simple, fast, and easy to use.",
+            "Built by animal lovers, for animal lovers."
+        })
+        {
+            <div class="col-md-6">
+                <div class="p-3 border rounded shadow-sm bg-white">
+                    <span>@item</span>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+
+<!-- ABOUT SECTION -->
+<div class="container py-5">
+    <h2 class="fw-bold text-center mb-3">Our Mission</h2>
+    <p class="lead text-center mx-auto" style="max-width: 800px;">
+        Every animal deserves a safe, loving home. Our mission is to make it
+        easier for people to connect with caring rescue organizations across
+        the country. Whether you're looking to adopt, foster, volunteer,
+        or donate, we help you find the right rescue quickly and easily.
+    </p>
+</div>
+
+
+<!-- GET INVOLVED -->
+<div class="container py-5">
+    <h2 class="fw-bold text-center mb-4">Get Involved</h2>
+
+    <div class="row g-4 text-center">
+        @foreach (var inv in new[] { "Adopt a Pet", "Foster an Animal", "Volunteer", "Donate Supplies" })
+        {
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="fw-bold">@inv</h5>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+
+<!-- FOOTER -->
+<footer class="text-center py-4 bg-dark text-white mt-5">
+    <p class="mb-0">&copy; @DateTime.Now.Year NetDevNow.com Animal Rescue Finder</p>
+    <small>Helping people connect with rescue organizations that save lives.</small>
+</footer>
+
+
+@code{
+
+    [Inject]
+    public NavigationManager? Nav { get; set; }
+
+
+    void OnSearch(DTO.API.SearchParams animalSearchDto)
+    {
+        Nav.NavigateTo($"search?zipCode={animalSearchDto.data.filterRadius.postalcode}&radius={animalSearchDto.data.filterRadius.miles}&species={animalSearchDto.data.filterRadius.species}");
+    }
+
+}

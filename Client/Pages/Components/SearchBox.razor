@@ -1,0 +1,74 @@
+﻿<div class="card-body">
+    <div class="row g-3 justify-content-center">
+        <div class="col-md-3">
+            <input type="text" placeholder="Enter ZIP Code" id="zipcode" name="zipcode"
+                   class="form-control" @bind="AnimalSearchDto.data.filterRadius.postalcode" />
+        </div>
+        @if (ShowBreeds)
+        {
+            <div class="col-md-4">
+                <select class="form-select" @bind="AnimalSearchDto.data.filterRadius.species">
+                    <option value="haspic">Everything</option>
+                    <option value="dogs">Dogs</option>
+                    <option value="cats">Cats</option>
+                    <option value="chickens">Chickens</option>
+                    <option value="hamsters">Hamsters</option>
+                    <option value="horses">Horses</option>
+                    <option value="guineapigs">Guinea Pigs</option>
+                    <option value="ponies">Ponies</option>
+                    <option value="rabbits">Rabbits</option>
+                </select>
+            </div>
+        }
+        <div class="col-md-3">
+            <select class="form-select" @bind="AnimalSearchDto.data.filterRadius.miles">
+                <option value="10">10 miles</option>
+                <option value="25">25 miles</option>
+                <option value="50">50 miles</option>
+                <option value="100">100 miles</option>
+            </select>
+        </div>
+    </div>
+    <div class="row g-3 justify-content-center">
+        @*<div class="col-md-5 d-grid">
+            <button class="btn btn-info m-1" type="button" @onclick="GetZipCode">
+                Get My Zip
+            </button>
+        </div>*@
+        <div class="col-md-5 d-grid">
+            <button class="btn btn-primary m-1" type="button" @onclick="SearchPets">
+                Search Rescues
+            </button>
+        </div>
+    </div>
+</div>
+
+
+@code {
+    [Parameter]
+    public EventCallback<DTO.API.SearchParams> OnSearch { get; set; }
+
+    [Parameter]
+    public DTO.API.SearchParams AnimalSearchDto { get; set; } = new();
+
+    [Parameter]
+    public bool ShowBreeds { get; set; } = true;
+
+    [Inject]
+    Client.Services.ZipService ZipService { get; set; }
+
+    async Task GetZipCode()
+    {
+        var zip = await ZipService.GetZipAsync();
+        if (!string.IsNullOrEmpty(zip) && string.IsNullOrEmpty(AnimalSearchDto.data.filterRadius.postalcode))
+        {
+            AnimalSearchDto.data.filterRadius.postalcode = zip;
+        }
+    }
+    void SearchPets()
+    {
+
+        OnSearch.InvokeAsync(AnimalSearchDto);
+
+    }
+}

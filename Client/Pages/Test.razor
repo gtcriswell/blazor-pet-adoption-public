@@ -1,0 +1,31 @@
+﻿@page "/test"
+
+
+<InputText @bind-Value="model.Name" class="form-control" placeholder="Enter name" />
+
+<button type="button" class="btn btn-primary mt-2" @onclick="HandleClick">
+    Click Me
+</button>
+
+@name
+
+@code {
+    private MyModel model = new();
+    private string name { get; set; }
+
+    private void HandleClick()
+    {
+        name = model.Name;
+        StateHasChanged();
+    }
+
+    private void OnSubmit()
+    {
+        Console.WriteLine($"Form submitted: {model.Name}");
+    }
+
+    public class MyModel
+    {
+        public string Name { get; set; } = string.Empty;
+    }
+}

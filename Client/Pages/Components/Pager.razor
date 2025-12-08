@@ -1,0 +1,79 @@
+﻿@typeparam TItem
+
+@if (TotalPages > 1)
+{
+    <nav>
+        <ul class="pagination">
+
+            <li class="page-item @(IsFirstPage ? "disabled" : "")">
+                <button class="page-link" @onclick="() => SetPage(1)">« First</button>
+            </li>
+
+            <li class="page-item @(IsFirstPage ? "disabled" : "")">
+                <button class="page-link" @onclick="() => SetPage(CurrentPage - 1)">‹ Prev</button>
+            </li>
+
+            @foreach (var item in VisiblePages)
+            {
+                <li class="page-item @(CurrentPage == item ? "active" : "")">
+                    <button class="page-link" @onclick="() => SetPage(item)">@item</button>
+                </li>
+            }
+
+            <li class="page-item @(IsLastPage ? "disabled" : "")">
+                <button class="page-link" @onclick="() => SetPage(CurrentPage + 1)">Next ›</button>
+            </li>
+
+            <li class="page-item @(IsLastPage ? "disabled" : "")">
+                <button class="page-link" @onclick="() => SetPage(TotalPages)">Last »</button>
+            </li>
+
+        </ul>
+    </nav>
+}
+
+@code {
+    [Parameter] public List<TItem> Items { get; set; } = new();
+    [Parameter] public int PageSize { get; set; } = 10;
+    [Parameter] public EventCallback<List<TItem>> PageChanged { get; set; }
+
+    private int CurrentPage { get; set; } = 1;
+    private List<TItem> _previousItems = new();
+
+    private int TotalPages => (int)Math.Ceiling((double)Items.Count / PageSize);
+    private bool IsFirstPage => CurrentPage <= 1;
+    private bool IsLastPage => CurrentPage >= TotalPages;
+
+    private IEnumerable<int> VisiblePages =>
+        Enumerable.Range(Math.Max(1, CurrentPage - 2), Math.Min(5, TotalPages))
+                  .Where(p => p <= TotalPages);
+
+    private List<TItem> PagedItems => Items
+        .Skip((CurrentPage - 1) * PageSize)
+        .Take(PageSize)
+        .ToList();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        // Reset page only if list changed
+        if (!ReferenceEquals(Items, _previousItems))
+        {
+            _previousItems = Items;
+            CurrentPage = 1;
+
+            if (Items.Any())
+            {
+                await PageChanged.InvokeAsync(PagedItems);
+            }
+        }
+    }
+
+    private async Task SetPage(int page)
+    {
+        if (page < 1 || page > TotalPages || page == CurrentPage)
+            return;
+
+        CurrentPage = page;
+        await PageChanged.InvokeAsync(PagedItems);
+    }
+}

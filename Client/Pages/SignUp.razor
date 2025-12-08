@@ -1,0 +1,70 @@
+﻿@page "/SignUp"
+
+<PageTitle>Sign Up</PageTitle>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+
+            <div class="card shadow-sm">
+                <div class="card-body">
+
+                    <h2 class="card-title mb-3">Join Our Email List</h2>
+
+                    <p class="text-muted">
+                        Sign up to receive future updates and notifications.<br />
+                        We respect your privacy — your email will
+                        <strong>never</strong> be sold or shared.
+                    </p>
+
+                    <div class="mb-3">
+                        <input type="email"
+                               id="email"
+                               class="form-control"
+                               placeholder="Enter your email"
+                               @bind="emailInput" />
+                    </div>
+
+                    <button type="button"
+                            class="btn btn-primary w-100"
+                            @onclick="SignUpEmail">
+                        Sign Up
+                    </button>
+
+                    @if (signUpComplete)
+                    {
+                        <div class="alert alert-success mt-3">
+                            You have successfully signed up with <strong>@emailInput</strong>.<br />
+                            Thank you — you'll receive future updates from us!
+                        </div>
+                    }
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+@code {
+    [Inject]
+    private Client.Services.IUserService userService { get; set; } = default!;
+
+    private string emailInput { get; set; } = string.Empty;
+    private bool signUpComplete = false;
+
+    private async Task SignUpEmail()
+    {
+        if (!string.IsNullOrWhiteSpace(emailInput))
+        {
+            var result = await userService.AddUser(emailInput);
+
+            if (result != null)
+            {
+                emailInput = result.Email;
+                signUpComplete = true;
+            }
+        }
+    }
+}

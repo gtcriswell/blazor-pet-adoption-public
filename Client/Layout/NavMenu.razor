@@ -1,0 +1,66 @@
+﻿<!-- Top Bar -->
+<div class="navbar navbar-expand-lg fancy-nav shadow-sm">
+    <div class="container-fluid">
+
+        <!-- Brand -->
+        <a class="navbar-brand d-flex align-items-center" href="">
+            <span class="paw-icon me-2">🐾</span>
+            <strong>Rescue</strong>
+        </a>
+
+        <!-- Toggler -->
+        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
+</div>
+
+<!-- Collapsible Menu -->
+<div class="@NavMenuCssClass fancy-menu shadow-sm" @onclick="ToggleNavMenu">
+    <nav class="nav flex-column py-3">
+
+        <div class="nav-item px-4 mb-2 hover-item">
+            <NavLink class="nav-link d-flex align-items-center" href="" Match="NavLinkMatch.All">
+            
+                <span>Home</span>
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-4 mb-2 hover-item">
+            <NavLink class="nav-link d-flex align-items-center" href="search">
+               
+                <span>Search Pets</span>
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-4 mb-2 hover-item">
+            <NavLink class="nav-link d-flex align-items-center" href="orgs">
+               
+                <span>Find a Shelter</span>
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-4 mb-2 hover-item">
+            <NavLink class="nav-link d-flex align-items-center" href="signup">
+                
+                <span>Get Email Updates</span>
+            </NavLink>
+        </div>
+
+    </nav>
+</div>
+
+<style>
+
+</style>
+
+@code {
+    private bool collapseNavMenu = true;
+
+    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : "show";
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+}
