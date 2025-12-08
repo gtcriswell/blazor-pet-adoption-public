@@ -1,4 +1,4 @@
-﻿@page "/Search"
+﻿@attribute [Route(Shared.Structs.PageNames.Search)]
 
 <PageTitle>Search</PageTitle>
 <style>
@@ -25,9 +25,10 @@
 <br />
 @if (allAnimals != null && allAnimals.Any())
 {
-    <div class="row">
+    <div class="row justify-content-center">
+        <div class="col-md-3 col-sm-0"></div>
         <div class="col-md-6 col-sm-12">
-            <Client.Pages.Components.Pager Items="allAnimals" PageSize="15" TItem="DTO.API.Animals.AnimalsStandard" PageChanged="OnPageChanged" />
+            <Client.Pages.Components.Pager Items="allAnimals" PageSize="25" TItem="DTO.API.Animals.AnimalsStandard" PageChanged="OnPageChanged" />
 
             @if (speciesOptions != null && speciesOptions.Any())
             {
@@ -41,157 +42,158 @@
                 </select>
             }
         </div>
+        <div class="col-md-3 col-sm-0"></div>
     </div>
 
-    <div class="row">
-        @foreach (var data in pagedAnimals)
-        {
+        <div class="row justify-content-center">
+            @foreach (var data in pagedAnimals)
+            {
 
-            <div class="col-md-3 col-sm-6 border rounded m-2 p-1 text-center">
+                <div class="col-md-3 col-sm-6 border rounded m-2 p-1 text-center">
 
-                <button class="no-border" type="button" data-bs-toggle="modal" data-bs-target="#modal_@data.Id">
-                    <img src="@data.PhotoUrlSmall" class="img-thumbnail no-border" />
-                </button>
+                    <button class="no-border" type="button" data-bs-toggle="modal" data-bs-target="#modal_@data.Id">
+                        <img src="@data.PhotoUrlSmall" class="img-thumbnail no-border" />
+                    </button>
 
-                <div class="fw-bold">@data.Breed</div>
-                <div>Miles @data.MilesAway away</div>
-                <div class="text-wrap">@data.LocationName</div>
-                <div>@data.Address</div>
-                @if (!string.IsNullOrEmpty(data.PhoneNumberString))
-                {
-                    <div><a href="tel:+1-@data.PhoneNumberString">@data.PhoneNumber</a></div>
-                }
+                    <div class="fw-bold">@data.Breed</div>
+                    <div>Miles @data.MilesAway away</div>
+                    <div class="text-wrap">@data.LocationName</div>
+                    <div>@data.Address</div>
+                    @if (!string.IsNullOrEmpty(data.PhoneNumberString))
+                    {
+                        <div><a href="tel:+1-@data.PhoneNumberString">@data.PhoneNumber</a></div>
+                    }
 
-                @if (!string.IsNullOrEmpty(data.WebsiteUrlString))
-                {
-                    <div><a href="@data.WebsiteUrl" target="_blank" class="text-decoration-none">@data.WebsiteUrl</a></div>
-                }
-                @if (!string.IsNullOrEmpty(data.FacebookUrlString))
-                {
-                    <div><a href="@data.FacebookUrl" target="_blank" class="text-decoration-none">Visit Their Facebook</a></div>
-                }
-            </div>
+                    @if (!string.IsNullOrEmpty(data.WebsiteUrlString))
+                    {
+                        <div><a href="@data.WebsiteUrl" target="_blank" class="text-decoration-none">@data.WebsiteUrl</a></div>
+                    }
+                    @if (!string.IsNullOrEmpty(data.FacebookUrlString))
+                    {
+                        <div><a href="@data.FacebookUrl" target="_blank" class="text-decoration-none">Visit Their Facebook</a></div>
+                    }
+                </div>
 
-            <!-- The Modal -->
-            <div class="modal fade" id="modal_@data.Id" tabindex="-1"
-                 aria-labelledby="modalLabel_@data.Id" aria-hidden="true">
+                <!-- The Modal -->
+                <div class="modal fade" id="modal_@data.Id" tabindex="-1"
+                     aria-labelledby="modalLabel_@data.Id" aria-hidden="true">
 
-                <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-                    <div class="modal-content">
+                    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+                        <div class="modal-content">
 
-                        <!-- Header -->
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="modalLabel_@data.Id">@data.Breed</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <!-- Header -->
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="modalLabel_@data.Id">@data.Breed</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+
+                            <!-- Body -->
+                            <div class="modal-body text-center">
+
+                                <img src="@data.PhotoUrlLarge"
+                                     alt="@data.Breed"
+                                     class="img-fluid rounded mb-3" />
+
+                                @if (!string.IsNullOrEmpty(data.WebsiteUrlString))
+                                {
+                                    <a href="@data.WebsiteUrl"
+                                       target="_blank"
+                                       class="btn btn-primary w-100">
+                                        Visit Website
+                                    </a>
+                                }
+                            </div>
+
                         </div>
-
-                        <!-- Body -->
-                        <div class="modal-body text-center">
-
-                            <img src="@data.PhotoUrlLarge"
-                                 alt="@data.Breed"
-                                 class="img-fluid rounded mb-3" />
-
-                            @if (!string.IsNullOrEmpty(data.WebsiteUrlString))
-                            {
-                                <a href="@data.WebsiteUrl"
-                                   target="_blank"
-                                   class="btn btn-primary w-100">
-                                    Visit Website
-                                </a>
-                            }
-                        </div>
-
                     </div>
                 </div>
-            </div>
 
-        }
-    </div>
-}
-
-@if (IsLoading)
-{
-    <div class="loading-overlay d-flex justify-content-center align-items-center">
-        <div class="spinner-border text-primary" role="status">
-            <span class="visually-hidden">Loading...</span>
+            }
         </div>
-    </div>
-}
+        }
+
+        @if (IsLoading)
+        {
+            <div class="loading-overlay d-flex justify-content-center align-items-center">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        }
 
 
-@code{
+        @code{
 
-    [Inject]
-    public NavigationManager? Nav { get; set; }
+            [Inject]
+            public NavigationManager? Nav { get; set; }
 
-    [Inject]
-    private Client.Services.IAdoptService adoptService { get; set; } = default!;
+            [Inject]
+            private Client.Services.IAdoptService adoptService { get; set; } = default!;
 
     private List<AnimalsStandard> allAnimals = new();
-    private List<AnimalsStandard> pagedAnimals = new();
+        private List<AnimalsStandard> pagedAnimals = new();
 
-    private List<string> speciesOptions { get; set; } = new();
+        private List<string> speciesOptions { get; set; } = new();
 
-    private DTO.API.SearchParams searchDto = new();
+        private DTO.API.SearchParams searchDto = new();
 
-    bool IsLoading { get; set; } = false;
+        bool IsLoading { get; set; } = false;
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender && Nav != null)
+        protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-
-            string zipCode = Nav.QueryString("zipCode").ToTrimmedString();
-            string radius = Nav.QueryString("radius").ToTrimmedString();
-            string species = Nav.QueryString("species").ToTrimmedString();
-
-            if (!string.IsNullOrEmpty(zipCode) && !string.IsNullOrEmpty(radius) && !string.IsNullOrEmpty(species))
+            if (firstRender && Nav != null)
             {
-                searchDto.data.filterRadius.miles = radius.ToInt(0);
-                searchDto.data.filterRadius.species = species;
-                searchDto.data.filterRadius.postalcode = zipCode;
 
-                StateHasChanged();
+                string zipCode = Nav.QueryString("zipCode").ToTrimmedString();
+                string radius = Nav.QueryString("radius").ToTrimmedString();
+                string species = Nav.QueryString("species").ToTrimmedString();
 
-                await OnSearch(searchDto);
+                if (!string.IsNullOrEmpty(zipCode) && !string.IsNullOrEmpty(radius) && !string.IsNullOrEmpty(species))
+                {
+                    searchDto.data.filterRadius.miles = radius.ToInt(0);
+                    searchDto.data.filterRadius.species = species;
+                    searchDto.data.filterRadius.postalcode = zipCode;
+
+                    StateHasChanged();
+
+                    await OnSearch(searchDto);
+                }
             }
         }
-    }
 
 
-    private void FilterBreeds(ChangeEventArgs args)
-    {
-        var selectedBreed = args.Value?.ToString();
-        if (!string.IsNullOrEmpty(selectedBreed))
+        private void FilterBreeds(ChangeEventArgs args)
         {
-            pagedAnimals = allAnimals.Where(x => x.Breed == selectedBreed).ToList();
+            var selectedBreed = args.Value?.ToString();
+            if (!string.IsNullOrEmpty(selectedBreed))
+            {
+                pagedAnimals = allAnimals.Where(x => x.Breed == selectedBreed).ToList();
+            }
+            else
+            {
+                pagedAnimals = allAnimals;
+            }
+
         }
-        else
+
+        private async Task OnSearch(DTO.API.SearchParams searchDto)
         {
-            pagedAnimals = allAnimals;
+            IsLoading = true;
+            StateHasChanged();
+
+            allAnimals = await adoptService.GetAnimals(searchDto);
+            allAnimals = allAnimals.OrderBy(a => a.MilesAway).ToList();
+
+            speciesOptions = allAnimals.OrderBy(x => x.Breed).Select(a => a.Breed).Distinct().ToList();
+
+            IsLoading = false;
+            StateHasChanged();
         }
 
-    }
+        private Task OnPageChanged(List<AnimalsStandard> newPage)
+        {
+            pagedAnimals = newPage;
+            return Task.CompletedTask;
 
-    private async Task OnSearch(DTO.API.SearchParams searchDto)
-    {
-        IsLoading = true;
-        StateHasChanged();
-
-        allAnimals = await adoptService.GetAnimals(searchDto);
-        allAnimals = allAnimals.OrderBy(a => a.MilesAway).ToList();
-
-        speciesOptions = allAnimals.OrderBy(x => x.Breed).Select(a => a.Breed).Distinct().ToList();
-
-        IsLoading = false;
-        StateHasChanged();
-    }
-
-    private Task OnPageChanged(List<AnimalsStandard> newPage)
-    {
-        pagedAnimals = newPage;
-        return Task.CompletedTask;
-
-    }
-}
+        }
+        }

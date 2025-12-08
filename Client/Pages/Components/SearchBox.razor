@@ -1,12 +1,12 @@
 ﻿<div class="card-body">
     <div class="row g-3 justify-content-center">
-        <div class="col-md-3">
+        <div class="col-md-2 cols-sm-12">
             <input type="text" placeholder="Enter ZIP Code" id="zipcode" name="zipcode"
                    class="form-control" @bind="AnimalSearchDto.data.filterRadius.postalcode" />
         </div>
         @if (ShowBreeds)
         {
-            <div class="col-md-4">
+            <div class="col-md-3 cols-sm-12">
                 <select class="form-select" @bind="AnimalSearchDto.data.filterRadius.species">
                     <option value="haspic">Everything</option>
                     <option value="dogs">Dogs</option>
@@ -20,7 +20,7 @@
                 </select>
             </div>
         }
-        <div class="col-md-3">
+        <div class="col-md-2 cols-sm-12">
             <select class="form-select" @bind="AnimalSearchDto.data.filterRadius.miles">
                 <option value="10">10 miles</option>
                 <option value="25">25 miles</option>
@@ -35,8 +35,8 @@
                 Get My Zip
             </button>
         </div>*@
-        <div class="col-md-5 d-grid">
-            <button class="btn btn-primary m-1" type="button" @onclick="SearchPets">
+        <div class="col-md-5 d-grid cols-sm-12">
+            <button class="btn btn-primary m-1 mt-sm-2" type="button" @onclick="SearchPets">
                 Search Rescues
             </button>
         </div>
