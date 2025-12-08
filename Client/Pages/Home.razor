@@ -1,4 +1,5 @@
 ﻿@attribute [Route(Shared.Structs.PageNames.Home)]
+@inherits Client.Base.AdoptBase
 
 <PageTitle>Find a Rescue</PageTitle>
 
@@ -79,7 +80,7 @@
 
     <div class="row g-4">
         @foreach (var item in new[]
- {
+{
             "100% Free Resource – No fees or sign-ups.",
             "Nationwide Rescue Database.",
             "Updated Listings from reliable sources.",

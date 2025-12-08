@@ -4,9 +4,9 @@
     {
 
         public const string Home = "/";
-        public const string Orgs = "/Orgs";
-        public const string Search = "/Search";
-        public const string Signup = "/Signup";
+        public const string Orgs = "orgs";
+        public const string Search = "search";
+        public const string Signup = "signup";
 
     }
 }

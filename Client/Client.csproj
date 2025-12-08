@@ -21,6 +21,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.10" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="9.0.10" PrivateAssets="all" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
   </ItemGroup>
 
   <ItemGroup>
@@ -28,4 +29,70 @@
     <ProjectReference Include="..\Shared\Shared.csproj" />
   </ItemGroup>
 
+  <UsingTask TaskName="ReplaceBaseHRef" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
+    <ParameterGroup>
+      <InputFilename ParameterType="System.String" Required="true" />
+      <AppSettingsfile ParameterType="System.String" Required="true" />
+      <Section ParameterType="System.String" Required="true" />
+      <BaseHRefAttribute ParameterType="System.String" Required="true" />
+    </ParameterGroup>
+    <Task>
+      <Reference Include="$(NugetPackageRoot)\newtonsoft.json\13.0.1\lib\netstandard2.0\Newtonsoft.Json.dll" />
+      <Using Namespace="System" />
+      <Using Namespace="System.IO" />
+      <Using Namespace="System.Text" />
+      <Using Namespace="System.Text.RegularExpressions" />
+      <Using Namespace="Newtonsoft.Json" />
+      <Using Namespace="Newtonsoft.Json.Linq" />
+      <Code Type="Fragment" Language="C#">
+        <![CDATA[
+        try
+        {
+            // Read input file and appsettings file
+            var inputFile = File.ReadAllText(InputFilename);
+            var appsetting = File.ReadAllText(AppSettingsfile);
+
+            // Parse the JSON configuration
+            JObject appsettings = JObject.Parse(appsetting);
+
+            // Get the specific section from appsettings
+            var section = appsettings[Section]; // Use the Section parameter here
+
+            if (section != null && section["BaseHRef"] != null)
+            {
+                // Extract BaseHRef value from the JSON configuration
+                var baseRef = section["BaseHRef"].ToString(); // Use the correct key "BaseHRef"
+
+                // Log the baseRef value
+                Log.LogMessage(MessageImportance.High, $"BaseHRef: {baseRef}");
+
+                // Prepare the regex pattern for <base href="..." />
+                var matchExpression = @"<base\s+href=""(.*)""\s*/?>";
+                var newBaseHRef = $"<base href=\"{baseRef}\" />";
+
+                // Replace the base href tag in the input HTML content
+                var updatedContent = Regex.Replace(inputFile, matchExpression, newBaseHRef);
+
+                // Write the modified content back to the output file
+                File.WriteAllText(InputFilename, updatedContent);
+            }
+            else
+            {
+                Log.LogMessage(MessageImportance.Low, "Section or BaseHRef not found in appsettings.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Log.LogMessage(MessageImportance.High, $"Error: {ex.Message}");
+        }
+      ]]>
+      </Code>
+    </Task>
+  </UsingTask>
+
+
+  <Target Name="ReplaceBaseHRef" AfterTargets="Publish">
+		<ReplaceBaseHRef InputFilename="$(PublishDir)wwwroot\index.html" AppSettingsfile="$(PublishDir)wwwroot\appsettings.json" Section="ClientSettings" BaseHRefAttribute="BaseHRef" />
+	</Target>
+	
 </Project>

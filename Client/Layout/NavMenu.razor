@@ -26,22 +26,19 @@
         </div>
 
         <div class="nav-item px-4 mb-2 hover-item">
-            <NavLink class="nav-link d-flex align-items-center" href="@Shared.Structs.PageNames.Search">
-               
+            <NavLink class="nav-link d-flex align-items-center" href="@(clientSettings.BaseHRef + Shared.Structs.PageNames.Search)">
                 <span>Search Pets</span>
             </NavLink>
         </div>
 
         <div class="nav-item px-4 mb-2 hover-item">
-            <NavLink class="nav-link d-flex align-items-center" href="@Shared.Structs.PageNames.Orgs">
-               
+            <NavLink class="nav-link d-flex align-items-center" href="@(clientSettings.BaseHRef + Shared.Structs.PageNames.Orgs)">
                 <span>Find a Shelter</span>
             </NavLink>
         </div>
 
         <div class="nav-item px-4 mb-2 hover-item">
-            <NavLink class="nav-link d-flex align-items-center" href="@Shared.Structs.PageNames.Signup">
-                
+            <NavLink class="nav-link d-flex align-items-center" href="@(clientSettings.BaseHRef + Shared.Structs.PageNames.Signup)">
                 <span>Get Email Updates</span>
             </NavLink>
         </div>
@@ -50,10 +47,13 @@
 </div>
 
 <style>
-
 </style>
 
 @code {
+
+    [Inject]
+    public DTO.Client.ClientSettings clientSettings { get; set; } = default!;
+
     private bool collapseNavMenu = true;
 
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : "show";

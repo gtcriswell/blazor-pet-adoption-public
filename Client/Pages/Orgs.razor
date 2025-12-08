@@ -1,4 +1,5 @@
 ﻿@attribute [Route(Shared.Structs.PageNames.Orgs)]
+@inherits Client.Base.AdoptBase
 
 <div class="text-center mb-4">
     <h2 class="fw-bold">Search Pet Adoption Rescues</h2>
@@ -108,9 +109,6 @@
 }
 
 @code {
-
-    [Inject]
-    private Client.Services.IAdoptService adoptService { get; set; }
 
     private List<OrgStandard> orgs { get; set; } = new();
 
