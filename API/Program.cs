@@ -2,9 +2,31 @@ using API.Business;
 using Data.Models;
 using DTO.API;
 using Microsoft.EntityFrameworkCore;
-using System;
+using Serilog;
+using Serilog.Events;
+using Serilog.Sinks.MSSqlServer;
 
-WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateBuilder(args);
+
+// Configure Serilog
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Debug()
+    .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+    .Enrich.FromLogContext()
+    .WriteTo.Console() // Optional: for console output alongside SQL Server
+    .WriteTo.MSSqlServer(
+        connectionString: builder.Configuration.GetConnectionString("DefaultConnection"),
+        sinkOptions: new MSSqlServerSinkOptions
+        {
+            TableName = "Logs", // The table where logs will be stored
+            AutoCreateSqlTable = true // Serilog will create the table if it doesn't exist
+        },
+        restrictedToMinimumLevel: LogEventLevel.Information // Log events from Information level and above
+    )
+    .CreateLogger();
+
+builder.Host.UseSerilog();
+
 
 // Add services to the container.
 
@@ -14,6 +36,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddDbContext<AdoptContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
+
+
 builder.Services.AddHttpClient(); // Registers IHttpClientFactory
 
 builder.Services.AddSwaggerGen();

@@ -172,3 +172,7 @@ code {
         transform: translateY(0);
     }
 }
+
+input::placeholder {
+    color: royalblue !important;
+}

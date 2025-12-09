@@ -3,17 +3,17 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Business
 {
-        #region interface
+    #region interface
     public interface IUserBusiness
     {
-        public  Task<Visitor?> GetUserByEmailAsync(string email);
-        public  Task<Visitor> AddVistorAsync(Visitor visitor);
-        public Task<Tracker> AddTrackerAsync(Tracker tracker);
+        Task<Visitor?> GetUserByEmailAsync(string email);
+        Task<Visitor> AddVistorAsync(Visitor visitor);
+        Task<Tracker> AddTrackerAsync(Tracker tracker);
 
     }
 
-        #endregion
-    public class UserBusiness: IUserBusiness
+    #endregion
+    public class UserBusiness : IUserBusiness
     {
         private readonly AdoptContext _adoptContext;
         public UserBusiness(AdoptContext adoptContext)
@@ -28,20 +28,20 @@ namespace API.Business
 
         public async Task<Visitor> AddVistorAsync(Visitor visitor)
         {
-            var existingVisitor = await GetUserByEmailAsync(visitor.Email);
+            Visitor? existingVisitor = await GetUserByEmailAsync(visitor.Email);
             if (existingVisitor != null)
             {
                 return existingVisitor; // Visitor already exists
             }
-            _adoptContext.Visitors.Add(visitor);
-            await _adoptContext.SaveChangesAsync();
+            _ = _adoptContext.Visitors.Add(visitor);
+            _ = await _adoptContext.SaveChangesAsync();
             return visitor;
         }
 
         public async Task<Tracker> AddTrackerAsync(Tracker tracker)
         {
-            _adoptContext.Trackers.Add(tracker);
-            await _adoptContext.SaveChangesAsync();
+            _ = _adoptContext.Trackers.Add(tracker);
+            _ = await _adoptContext.SaveChangesAsync();
             return tracker;
         }
     }

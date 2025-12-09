@@ -8,7 +8,7 @@ namespace Client.Services
 
     public interface IUserService
     {
-        public Task<VisitorDto> AddUser(string email, CancellationToken cancellationToken = default);
+        Task<VisitorDto> AddUser(string email, CancellationToken cancellationToken = default);
     }
 
     #endregion

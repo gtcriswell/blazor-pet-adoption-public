@@ -26,27 +26,34 @@
 <br />
 @if (allAnimals != null && allAnimals.Any())
 {
-    <div class="row justify-content-center">
-        <div class="col-md-3 col-sm-0"></div>
-        <div class="col-md-6 col-sm-12">
-            <Client.Pages.Components.Pager Items="allAnimals" PageSize="25" TItem="DTO.API.Animals.AnimalsStandard" PageChanged="OnPageChanged" />
-
-            @if (speciesOptions != null && speciesOptions.Any())
-            {
-                <select class="form-select" @onchange="FilterBreeds">
-                    <option value="">Filter Breed</option>
-                    @foreach (var b in speciesOptions)
-                    {
-                        <option value="@b">@b</option>
-                    }
-                    <option value="">Show All</option>
-                </select>
-            }
+<div class="d-flex justify-content-center align-items-center">
+    <div class="text-center w-100">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-sm-12">
+                @if (speciesOptions != null && speciesOptions.Any())
+                {
+                    <select class="form-select" @onchange="FilterBreeds">
+                        <option value="">Filter Breed</option>
+                        @foreach (var b in speciesOptions)
+                        {
+                            <option value="@b">@b</option>
+                        }
+                        <option value="">Show All</option>
+                    </select>
+                }
+            </div>
         </div>
-        <div class="col-md-3 col-sm-0"></div>
+
+        <div class="row justify-content-center mt-5">
+            <div class="col-md-6 col-sm-12">
+                <Client.Pages.Components.Pager Items="allAnimals" PageSize="25" TItem="DTO.API.Animals.AnimalsStandard" PageChanged="OnPageChanged" />
+            </div>
+        </div>
     </div>
+</div>
 
     <div class="row justify-content-center">
+       
         @foreach (var data in pagedAnimals)
         {
 

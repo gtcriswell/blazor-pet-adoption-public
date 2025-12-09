@@ -17,31 +17,35 @@
                         We respect your privacy — your email will
                         <strong>never</strong> be sold or shared.
                     </p>
-
-                    <div class="mb-3">
-                        <input type="email"
-                               id="email"
-                               class="form-control"
-                               placeholder="Enter your email"
-                               @bind="emailInput" />
+                    <div class="row">
+                        <div class="col-md-6 col-sm-12">
+                            <input type="email"
+                                   id="email"
+                                   class="form-control"
+                                   placeholder="Enter your email"
+                                   @bind="emailInput" />
+                        </div>
+                        <div class="col-md-6 col-sm-12 mt-md-0 mt-sm-2">
+                            <button type="button"
+                                    class="btn btn-primary w-100"
+                                    @onclick="SignUpEmail">
+                                Sign Up
+                            </button>
+                        </div>
                     </div>
 
-                    <button type="button"
-                            class="btn btn-primary w-100"
-                            @onclick="SignUpEmail">
-                        Sign Up
-                    </button>
+                    <div class="row">
+                        @if (signUpComplete)
+                        {
+                            <div class="alert alert-success mt-3">
+                                You have successfully signed up with <strong>@emailInput</strong>.<br />
+                                Thank you — you'll receive future updates from us!
+                            </div>
+                        }
 
-                    @if (signUpComplete)
-                    {
-                        <div class="alert alert-success mt-3">
-                            You have successfully signed up with <strong>@emailInput</strong>.<br />
-                            Thank you — you'll receive future updates from us!
-                        </div>
-                    }
-
+                    </div>
                 </div>
-            </div>
+                </div>
 
         </div>
     </div>

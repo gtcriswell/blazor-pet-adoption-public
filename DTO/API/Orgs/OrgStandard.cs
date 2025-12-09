@@ -2,7 +2,7 @@
 
 namespace DTO.API.Orgs
 {
-    public partial class OrgStandard: Attributes
+    public partial class OrgStandard : Attributes
     {
 
         public string AddressString

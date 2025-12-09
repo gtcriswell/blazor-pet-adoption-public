@@ -10,14 +10,11 @@ WebAssemblyHostBuilder builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
 WebAssemblyHostConfiguration configuration = builder.Configuration;
-var clientSettingsSection = configuration
+ClientSettings clientSettingsSection = configuration
     .GetRequiredSection("ClientSettings")
     .Get<ClientSettings>()!;
 
-if (clientSettingsSection==null)
-{ 
-    clientSettingsSection = new();
-}
+clientSettingsSection ??= new();
 
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
