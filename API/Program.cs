@@ -1,10 +1,17 @@
 using API.Business;
 using Data.Models;
 using DTO.API;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi;
 using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.MSSqlServer;
+using System.Reflection;
+
+string defaultConnection = "DefaultConnection";
+string apiSettings = "ApiSettings";
+string corsPolicyName = "allowWasm";
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,36 +20,62 @@ Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Debug()
     .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
     .Enrich.FromLogContext()
-    .WriteTo.Console() // Optional: for console output alongside SQL Server
+    .WriteTo.Console()
     .WriteTo.MSSqlServer(
-        connectionString: builder.Configuration.GetConnectionString("DefaultConnection"),
+        connectionString: builder.Configuration.GetConnectionString(defaultConnection),
         sinkOptions: new MSSqlServerSinkOptions
         {
-            TableName = "Logs", // The table where logs will be stored
-            AutoCreateSqlTable = true // Serilog will create the table if it doesn't exist
+            TableName = "Logs",
+            AutoCreateSqlTable = true
         },
-        restrictedToMinimumLevel: LogEventLevel.Information // Log events from Information level and above
+        restrictedToMinimumLevel: LogEventLevel.Information
     )
     .CreateLogger();
 
 builder.Host.UseSerilog();
 
-
 // Add services to the container.
-
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddDbContext<AdoptContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
+    options.UseSqlServer(builder.Configuration.GetConnectionString(defaultConnection))
 );
-
 
 builder.Services.AddHttpClient(); // Registers IHttpClientFactory
 
-builder.Services.AddSwaggerGen();
+// Swagger / OpenAPI configuration
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "Adopt API",
+        Version = "v1",
+        Description = "API for pet adoption — exposes endpoints used by the Blazor WASM client."
+    });
 
-builder.Services.Configure<ApiSettings>(builder.Configuration.GetSection("ApiSettings"));
+    // Include XML comments (enable GenerateDocumentationFile in the API project file)
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    if (File.Exists(xmlPath))
+    {
+        c.IncludeXmlComments(xmlPath);
+    }
+
+    // Optional: Bearer token support for testing secured endpoints in Swagger UI
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description = "JWT Authorization header using the Bearer scheme. Example: \"Bearer {token}\"",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT"
+    });
+
+});
+
+builder.Services.Configure<ApiSettings>(builder.Configuration.GetSection(apiSettings));
 builder.Services.AddScoped<ApiSettings>();
 builder.Services.AddScoped<IAdoptBusiness, AdoptBusiness>();
 builder.Services.AddScoped<IUserBusiness, UserBusiness>();
@@ -51,10 +84,10 @@ builder.Services.AddMemoryCache();
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("allowWasm", policy =>
+    options.AddPolicy(corsPolicyName, policy =>
     {
         _ = policy
-            .WithOrigins("https://localhost:7047", "https://netdevnow.com") // your Blazor WASM URL
+            .WithOrigins("https://localhost:7047", "https://netdevnow.com")
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
@@ -62,18 +95,19 @@ builder.Services.AddCors(options =>
 
 WebApplication app = builder.Build();
 
-
-//if (app.Environment.IsDevelopment())
+// Expose Swagger/OpenAPI JSON and UI. In production you can gate this behind config or only enable for non-prod.
+app.UseSwagger();
+app.UseSwaggerUI(c =>
 {
-    _ = app.UseSwagger();
-    _ = app.UseSwaggerUI();
-}
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Adopt API v1");
+    c.RoutePrefix = "swagger"; // Browse to /swagger
+});
 
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
-app.UseCors("allowWasm");
+app.UseCors(corsPolicyName);
 
 app.MapControllers();
 

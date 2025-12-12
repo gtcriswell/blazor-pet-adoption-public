@@ -3,73 +3,83 @@
 
 <PageTitle>Sign Up</PageTitle>
 
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
+<EditForm Model="@_visitorDto" OnValidSubmit="@SignUpEmail">
 
-            <div class="card shadow-sm">
-                <div class="card-body">
+    <Blazored.FluentValidation.FluentValidationValidator @ref="_fluentValidationValidator" DisableAssemblyScanning="@true" />
 
-                    <h2 class="card-title mb-3">Join Our Email List</h2>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
 
-                    <p class="text-muted">
-                        Sign up to receive future updates and notifications.<br />
-                        We respect your privacy — your email will
-                        <strong>never</strong> be sold or shared.
-                    </p>
-                    <div class="row">
-                        <div class="col-md-6 col-sm-12">
-                            <input type="email"
-                                   id="email"
-                                   class="form-control"
-                                   placeholder="Enter your email"
-                                   @bind="emailInput" />
-                        </div>
-                        <div class="col-md-6 col-sm-12 mt-md-0 mt-sm-2">
-                            <button type="button"
-                                    class="btn btn-primary w-100"
-                                    @onclick="SignUpEmail">
-                                Sign Up
-                            </button>
-                        </div>
-                    </div>
+                <div class="card shadow-sm">
+                    <div class="card-body">
 
-                    <div class="row">
-                        @if (signUpComplete)
-                        {
-                            <div class="alert alert-success mt-3">
-                                You have successfully signed up with <strong>@emailInput</strong>.<br />
-                                Thank you — you'll receive future updates from us!
+                        <h2 class="card-title mb-3">Join Our Email List</h2>
+
+                        <p class="text-muted">
+                            Sign up to receive future updates and notifications.<br />
+                            We respect your privacy — your email will
+                            <strong>never</strong> be sold or shared.
+                        </p>
+                        <div class="row">
+                            <div class="col-md-6 col-sm-12">
+                                <input type="email"
+                                       id="email"
+                                       class="form-control"
+                                       placeholder="Enter your email"
+                                       @bind="_visitorDto.Email" />
+                         
                             </div>
-                        }
+                            <div class="col-md-6 col-sm-12 mt-md-0 mt-sm-2">
+                                <button type="submit"
+                                        class="btn btn-primary w-100">
+                                    Sign Up
+                                </button>
+                            </div>
+                        </div>
 
+                        <div class="row">
+                            @if (signUpComplete)
+                            {
+                                <div class="alert alert-success mt-3">
+                                    You have successfully signed up with <strong>@_visitorDto.Email</strong>.<br />
+                                    Thank you — you'll receive future updates from us!
+                                </div>
+                            }
+
+                        </div>
+                        <div class="row">
+                            <ValidationMessage For="@(() => _visitorDto.Email)" />
+                        </div>
                     </div>
                 </div>
-                </div>
 
+            </div>
         </div>
     </div>
-</div>
+</EditForm>
 
+    @code {
 
-@code {
-    [Inject]
-    private Client.Services.IUserService userService { get; set; } = default!;
+        private Blazored.FluentValidation.FluentValidationValidator? _fluentValidationValidator;
 
-    private string emailInput { get; set; } = string.Empty;
-    private bool signUpComplete = false;
+        [Inject]
+        private Client.Services.IUserService userService { get; set; } = default!;
 
-    private async Task SignUpEmail()
-    {
-        if (!string.IsNullOrWhiteSpace(emailInput))
+        private DTO.User.VisitorDto _visitorDto { get; set; } = new();
+        private bool signUpComplete = false;
+
+        private async Task SignUpEmail()
         {
-            var result = await userService.AddUser(emailInput);
-
-            if (result != null)
+            if (!string.IsNullOrWhiteSpace(_visitorDto.Email))
             {
-                emailInput = result.Email;
-                signUpComplete = true;
+                var result = await userService.AddUser(_visitorDto.Email);
+
+                if (result != null)
+                {
+                    _visitorDto.Email = result.Email;
+                    signUpComplete = true;
+                }
             }
         }
     }
-}

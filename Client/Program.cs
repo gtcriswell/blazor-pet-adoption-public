@@ -1,9 +1,13 @@
 using Client;
 using Client.Services;
+using Client.Validation;
 using DTO.Client;
+using DTO.User;
+using FluentValidation;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Shared;
+using System.ComponentModel.DataAnnotations;
 
 WebAssemblyHostBuilder builder = WebAssemblyHostBuilder.CreateDefault(args);
 
@@ -30,6 +34,8 @@ builder.Services.AddSingleton(clientSettingsSection);
 builder.Services.AddScoped<IAdoptService, AdoptService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ZipService>();
+
+builder.Services.AddTransient<IValidator<VisitorDto>,VisitorDtoValidator>();
 
 await builder.Build().RunAsync();
 
