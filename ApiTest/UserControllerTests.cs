@@ -16,7 +16,7 @@ namespace apitests
             var logger = new Mock<ILogger<UserController>>();
             var controller = new UserController(userBusiness.Object, logger.Object);
 
-            var result = await controller.AddVisitorAsync(email: "");
+            var result = await controller.AddVisitorAsync(new Visitor() { Email=""});
 
             var badRequest = Assert.IsType<BadRequestObjectResult>(result);
             Assert.Equal("Email is required.", badRequest.Value);
@@ -33,7 +33,7 @@ namespace apitests
             var logger = new Mock<ILogger<UserController>>();
             var controller = new UserController(userBusiness.Object, logger.Object);
 
-            var result = await controller.AddVisitorAsync(email: "test@example.com");
+            var result = await controller.AddVisitorAsync(new Visitor() { Email = "test@example.com" });
 
             var ok = Assert.IsType<OkObjectResult>(result);
             var returned = Assert.IsType<Visitor>(ok.Value);
@@ -50,7 +50,7 @@ namespace apitests
             var logger = new Mock<ILogger<UserController>>();
             var controller = new UserController(userBusiness.Object, logger.Object);
 
-            var result = await controller.AddVisitorAsync(email: "noreturn@example.com");
+            var result = await controller.AddVisitorAsync(new Visitor() { Email = "noreturn@example.com" });
 
             var ok = Assert.IsType<OkObjectResult>(result);
             var returned = Assert.IsType<Visitor>(ok.Value);
@@ -67,7 +67,7 @@ namespace apitests
             var logger = new Mock<ILogger<UserController>>();
             var controller = new UserController(userBusiness.Object, logger.Object);
 
-            var result = await controller.AddVisitorAsync(email: "err@example.com");
+            var result = await controller.AddVisitorAsync(new Visitor() { Email = "err@example.com" });
 
             var objectResult = Assert.IsType<ObjectResult>(result);
             Assert.Equal(500, objectResult.StatusCode);

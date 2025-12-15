@@ -18,25 +18,23 @@ namespace API.Controllers
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        [HttpGet("AddVisitor")]
-        public async Task<IActionResult> AddVisitorAsync([FromQuery] string email = "", CancellationToken cancellationToken = default)
+        [HttpPost("AddVisitor")]
+        public async Task<IActionResult> AddVisitorAsync([FromBody] Visitor visitor, CancellationToken cancellationToken = default)
         {
-            if (string.IsNullOrWhiteSpace(email))
+            if (visitor == null || string.IsNullOrWhiteSpace(visitor.Email))
             {
                 return BadRequest("Email is required.");
             }
 
             try
             {
-                Visitor visitor = new()
-                {
-                    CreatedDate = DateTime.UtcNow,
-                    Email = email
-                };
+                // Optionally set CreatedDate if needed
+                visitor.CreatedDate = DateTime.UtcNow;
 
-                Visitor results = await _userBusiness.AddVistorAsync(visitor);
+                Visitor? result = await _userBusiness.AddVistorAsync(visitor);
 
-                return results == null ? Ok(new Visitor()) : Ok(results);
+                // Return the created visitor or an empty visitor if null
+                return Ok(result ?? new Visitor());
             }
             catch (OperationCanceledException)
             {
@@ -49,6 +47,7 @@ namespace API.Controllers
                 return Problem(detail: "An error occurred while adding visitor.", statusCode: 500);
             }
         }
+
 
         [HttpPost("AddTracker")]
         public async Task<IActionResult> AddTracker(Tracker tracker, CancellationToken cancellationToken = default)

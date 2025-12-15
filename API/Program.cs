@@ -1,7 +1,6 @@
 using API.Business;
 using Data.Models;
 using DTO.API;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi;
 using Serilog;
@@ -19,6 +18,7 @@ var builder = WebApplication.CreateBuilder(args);
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Debug()
     .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+    .MinimumLevel.Override("System.Net.Http.HttpClient", LogEventLevel.Warning)
     .Enrich.FromLogContext()
     .WriteTo.Console()
     .WriteTo.MSSqlServer(
@@ -28,7 +28,7 @@ Log.Logger = new LoggerConfiguration()
             TableName = "Logs",
             AutoCreateSqlTable = true
         },
-        restrictedToMinimumLevel: LogEventLevel.Information
+        restrictedToMinimumLevel: LogEventLevel.Warning
     )
     .CreateLogger();
 
@@ -87,7 +87,8 @@ builder.Services.AddCors(options =>
     options.AddPolicy(corsPolicyName, policy =>
     {
         _ = policy
-            .WithOrigins("https://localhost:7047", "https://netdevnow.com")
+            //.WithOrigins("https://localhost:7047", "https://netdevnow.com")
+            .AllowAnyOrigin()
             .AllowAnyHeader()
             .AllowAnyMethod();
     });

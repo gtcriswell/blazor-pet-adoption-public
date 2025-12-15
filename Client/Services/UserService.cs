@@ -1,5 +1,4 @@
 ﻿using DTO.User;
-using Shared;
 using System.Net.Http.Json;
 
 namespace Client.Services
@@ -30,34 +29,39 @@ namespace Client.Services
         public async Task<VisitorDto> AddUser(string email, CancellationToken cancellationToken = default)
         {
             HttpClient client = _httpClientFactory.CreateClient("API");
+            string url = client.BaseAddress + "api/User/AddVisitor";
 
-            string url = Utilities.BuildUrl("api/user/addvisitor", new Dictionary<object, object>
+            var payload = new VisitorDto()
             {
-                { "email", email},
-            });
+                Email = email,
+                CreatedDate = DateTime.UtcNow
+            };
 
             try
             {
-                HttpResponseMessage response = await client.GetAsync(url, cancellationToken);
+                // Pass the object, not a serialized string
+                HttpResponseMessage response = await client.PostAsJsonAsync(url, payload, cancellationToken);
 
                 if (response.IsSuccessStatusCode)
                 {
                     VisitorDto? visitorDto = await response.Content.ReadFromJsonAsync<VisitorDto>(_jsonOptions, cancellationToken).ConfigureAwait(false);
-                    return visitorDto ?? new();
+
+                    return visitorDto ?? new VisitorDto();
                 }
 
-                return new();
+                return new VisitorDto();
             }
             catch (OperationCanceledException)
             {
                 // Propagate cancellation
                 throw;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // Log exception if logging is available; return empty list to preserve existing behavior
-                return new();
+                // Optionally log the exception
+                return new VisitorDto();
             }
         }
+
     }
 }
