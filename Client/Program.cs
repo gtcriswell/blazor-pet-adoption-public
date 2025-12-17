@@ -1,4 +1,5 @@
 using Client;
+using Client.Middleware;
 using Client.Services;
 using Client.Validation;
 using DTO.Client;
@@ -33,9 +34,21 @@ builder.Services.AddSingleton(clientSettingsSection);
 
 builder.Services.AddScoped<IAdoptService, AdoptService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ILogService, LogService>();
 builder.Services.AddScoped<ZipService>();
 
-builder.Services.AddTransient<IValidator<VisitorDto>,VisitorDtoValidator>();
+builder.Services.AddTransient<IValidator<VisitorDto>, VisitorDtoValidator>();
+
+var serviceProvider = builder.Services.BuildServiceProvider();
+var logService = serviceProvider.GetService<ILogService>();
+
+if (logService != null)
+{
+    var unhandledExceptionSender = new UnhandledExceptionSender();
+    var unhandledExceptionProvider = new UnhandledExceptionProvider(logService);
+    builder.Logging.AddProvider(unhandledExceptionProvider);
+    builder.Services.AddSingleton<IUnhandledExceptionSender>(unhandledExceptionSender);
+}
 
 await builder.Build().RunAsync();
 

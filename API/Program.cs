@@ -1,4 +1,5 @@
 using API.Business;
+using API.Middleware;
 using Data.Models;
 using DTO.API;
 using Microsoft.EntityFrameworkCore;
@@ -109,6 +110,8 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.UseCors(corsPolicyName);
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.MapControllers();
 
